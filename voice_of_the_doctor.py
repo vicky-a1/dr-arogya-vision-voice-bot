@@ -11,13 +11,36 @@ from pydub import AudioSegment
 # Helper function to convert MP3 to WAV
 def convert_mp3_to_wav(mp3_path, wav_path):
     try:
-        sound = AudioSegment.from_mp3(mp3_path)
-        sound.export(wav_path, format="wav")
-        logging.info(f"Converted {mp3_path} to {wav_path}")
-        return wav_path
+        # Try using pydub first
+        try:
+            sound = AudioSegment.from_mp3(mp3_path)
+            sound.export(wav_path, format="wav")
+            logging.info(f"Converted {mp3_path} to {wav_path} using pydub")
+            return wav_path
+        except Exception as pydub_error:
+            logging.warning(f"Pydub conversion failed: {pydub_error}")
+
+            # Fallback to ffmpeg if available
+            try:
+                import subprocess
+                result = subprocess.run(
+                    ["ffmpeg", "-i", mp3_path, wav_path],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE
+                )
+                if result.returncode == 0:
+                    logging.info(f"Converted {mp3_path} to {wav_path} using ffmpeg")
+                    return wav_path
+                else:
+                    raise Exception(f"ffmpeg returned non-zero exit code: {result.returncode}")
+            except Exception as ffmpeg_error:
+                logging.warning(f"ffmpeg conversion failed: {ffmpeg_error}")
+                # Just return the MP3 path as a last resort
+                logging.info(f"Using original MP3 file: {mp3_path}")
+                return mp3_path
     except Exception as e:
         logging.error(f"Error converting MP3 to WAV: {e}")
-        return None
+        return mp3_path  # Return the original MP3 path as a fallback
 
 def text_to_speech_with_gtts_old(input_text, output_filepath):
     language="en"
@@ -86,19 +109,20 @@ def text_to_speech_with_gtts(input_text, output_filepath):
             logging.warning(f"Could not convert to WAV, using MP3: {mp3_filepath}")
             wav_path = mp3_filepath
 
-        # Try to play the audio
-        os_name = platform.system()
-        try:
-            if os_name == "Darwin":  # macOS
-                subprocess.run(['afplay', wav_path])
-            elif os_name == "Windows":  # Windows
-                subprocess.run(['powershell', '-c', f'(New-Object Media.SoundPlayer "{wav_path}").PlaySync();'])
-            elif os_name == "Linux":  # Linux
-                subprocess.run(['aplay', wav_path])  # Alternative: use 'mpg123' or 'ffplay'
-            else:
-                raise OSError("Unsupported operating system")
-        except Exception as e:
-            logging.warning(f"An error occurred while trying to play the audio: {e}")
+        # Try to play the audio (commented out for web interface)
+        # We don't need to play the audio here as Gradio will handle playback
+        # os_name = platform.system()
+        # try:
+        #     if os_name == "Darwin":  # macOS
+        #         subprocess.run(['afplay', wav_path])
+        #     elif os_name == "Windows":  # Windows
+        #         subprocess.run(['powershell', '-c', f'(New-Object Media.SoundPlayer "{wav_path}").PlaySync();'])
+        #     elif os_name == "Linux":  # Linux
+        #         subprocess.run(['aplay', wav_path])  # Alternative: use 'mpg123' or 'ffplay'
+        #     else:
+        #         raise OSError("Unsupported operating system")
+        # except Exception as e:
+        #     logging.warning(f"An error occurred while trying to play the audio: {e}")
 
         return wav_path
     except Exception as e:
@@ -166,19 +190,20 @@ def text_to_speech_with_elevenlabs(input_text, output_filepath):
             logging.warning(f"Could not convert to WAV, using MP3: {mp3_filepath}")
             wav_path = mp3_filepath
 
-        # Try to play the audio
-        os_name = platform.system()
-        try:
-            if os_name == "Darwin":  # macOS
-                subprocess.run(['afplay', wav_path])
-            elif os_name == "Windows":  # Windows
-                subprocess.run(['powershell', '-c', f'(New-Object Media.SoundPlayer "{wav_path}").PlaySync();'])
-            elif os_name == "Linux":  # Linux
-                subprocess.run(['aplay', wav_path])  # Alternative: use 'mpg123' or 'ffplay'
-            else:
-                raise OSError("Unsupported operating system")
-        except Exception as e:
-            logging.warning(f"An error occurred while trying to play the audio: {e}")
+        # Try to play the audio (commented out for web interface)
+        # We don't need to play the audio here as Gradio will handle playback
+        # os_name = platform.system()
+        # try:
+        #     if os_name == "Darwin":  # macOS
+        #         subprocess.run(['afplay', wav_path])
+        #     elif os_name == "Windows":  # Windows
+        #         subprocess.run(['powershell', '-c', f'(New-Object Media.SoundPlayer "{wav_path}").PlaySync();'])
+        #     elif os_name == "Linux":  # Linux
+        #         subprocess.run(['aplay', wav_path])  # Alternative: use 'mpg123' or 'ffplay'
+        #     else:
+        #         raise OSError("Unsupported operating system")
+        # except Exception as e:
+        #     logging.warning(f"An error occurred while trying to play the audio: {e}")
 
         return wav_path
     except Exception as e:
@@ -188,4 +213,4 @@ def text_to_speech_with_elevenlabs(input_text, output_filepath):
         # Fall back to gTTS if ElevenLabs fails
         return text_to_speech_with_gtts(input_text + f"\n\nNote: Using Google Text-to-Speech because ElevenLabs API returned an error: {str(e)}", output_filepath)
 
-#text_to_speech_with_elevenlabs(input_text, output_filepath="elevenlabs_testing_autoplay.mp3")
+#text_to_speech_with_elevenlabs(input_text, output_filepath="elevenlabs_testing_autoplay.mp3")  # Using Vikas in input_text

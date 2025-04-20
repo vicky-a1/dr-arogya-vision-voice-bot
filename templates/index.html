@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arogya Doctor Vision</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-container">
+                <div class="logo-pulse"></div>
+                <h1>Arogya Doctor Vision</h1>
+            </div>
+            <h2>AI-Powered Medical Diagnosis Assistant</h2>
+        </header>
+
+        <!-- API Status removed as requested -->
+
+        <!-- Main Content -->
+        <main class="app-content">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="diagnosis">Diagnosis</button>
+                <button class="tab-btn" data-tab="about">About</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Diagnosis Tab -->
+                <div id="diagnosis" class="tab-pane active">
+                    <div class="instructions-panel">
+                        <h3><i class="fas fa-info-circle"></i> How to use this application</h3>
+                        <div class="instructions-content">
+                            <ol>
+                                <li><strong>Record your voice</strong> - Click the microphone button and ask about your medical condition</li>
+                                <li><strong>Upload an image</strong> - Upload a clear image of the affected area or medical scan</li>
+                                <li><strong>Get diagnosis</strong> - Click the 'Get Diagnosis' button and wait for Dr. Arogya's analysis</li>
+                                <li><strong>Review results</strong> - Read the diagnosis and listen to the audio response</li>
+                            </ol>
+                            <p>For best results, ensure your image is clear and well-lit, and speak clearly when recording your question.</p>
+                        </div>
+                    </div>
+
+                    <div class="diagnosis-container">
+                        <!-- Input Section -->
+                        <div class="input-section">
+                            <div class="input-card">
+                                <h3><i class="fas fa-microphone"></i> Step 1: Record your question</h3>
+                                <div class="audio-recorder">
+                                    <div class="record-button">
+                                        <i class="fas fa-microphone"></i>
+                                    </div>
+                                    <div class="audio-visualizer">
+                                        <div class="visualizer-bar"></div>
+                                        <div class="visualizer-bar"></div>
+                                        <div class="visualizer-bar"></div>
+                                        <div class="visualizer-bar"></div>
+                                        <div class="visualizer-bar"></div>
+                                    </div>
+                                    <div class="audio-controls">
+                                        <button id="start-recording" class="control-btn"><i class="fas fa-microphone"></i> Start</button>
+                                        <button id="stop-recording" class="control-btn" disabled><i class="fas fa-stop"></i> Stop</button>
+                                        <button id="play-audio" class="control-btn" disabled><i class="fas fa-play"></i> Play</button>
+                                    </div>
+                                    <audio id="recorded-audio" controls style="display: none;"></audio>
+                                </div>
+                            </div>
+
+                            <div class="input-card">
+                                <h3><i class="fas fa-image"></i> Step 2: Upload a medical image</h3>
+                                <div class="image-uploader">
+                                    <div id="drop-area">
+                                        <p>Drag & drop an image here or</p>
+                                        <input type="file" id="file-input" accept="image/*" hidden>
+                                        <button id="file-select-btn" class="btn">Select Image</button>
+                                    </div>
+                                    <div id="image-preview" class="image-preview">
+                                        <img id="preview-img" src="" alt="Preview">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="action-buttons">
+                                <button id="clear-btn" class="btn btn-secondary"><i class="fas fa-trash"></i> Clear</button>
+                                <button id="diagnose-btn" class="btn btn-primary" disabled><i class="fas fa-stethoscope"></i> Get Diagnosis</button>
+                            </div>
+                        </div>
+
+                        <!-- Output Section -->
+                        <div class="output-section">
+                            <div class="output-card">
+                                <h3><i class="fas fa-comment"></i> Your Transcribed Question</h3>
+                                <div id="transcription-output" class="output-text"></div>
+                            </div>
+
+                            <div class="output-card">
+                                <h3><i class="fas fa-user-md"></i> Dr. Arogya's Diagnosis</h3>
+                                <div id="diagnosis-output" class="output-text"></div>
+                            </div>
+
+                            <div class="output-card">
+                                <h3><i class="fas fa-volume-up"></i> Audio Response</h3>
+                                <div id="audio-output" class="audio-player">
+                                    <audio id="diagnosis-audio" controls></audio>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Tab -->
+                <div id="about" class="tab-pane">
+                    <div class="about-content">
+                        <h2>About Arogya Doctor Vision</h2>
+                        <p>Arogya Doctor Vision is an AI-powered medical diagnosis assistant that helps you get preliminary insights about your medical conditions.</p>
+
+                        <h3>Features:</h3>
+                        <ul>
+                            <li><strong>Voice interaction</strong> - Ask questions naturally using your voice</li>
+                            <li><strong>Image analysis</strong> - Upload medical images for AI analysis</li>
+                            <li><strong>Professional diagnosis</strong> - Get detailed medical insights from Dr. Arogya</li>
+                            <li><strong>Audio response</strong> - Listen to the diagnosis in a natural voice</li>
+                        </ul>
+
+                        <div class="warning-box">
+                            <h3>Important Note:</h3>
+                            <p>This application is for informational purposes only and should not replace professional medical advice. Always consult with a healthcare professional for proper diagnosis and treatment.</p>
+                        </div>
+
+                        <!-- Technologies Used section removed as requested -->
+
+                        <h3>Contact:</h3>
+                        <p>For support or inquiries, please contact <a href="mailto:support@arogya.com">support@arogya.com</a></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="loading-content">
+                <div class="doctor-animation">
+                    <div class="stethoscope">
+                        <div class="stethoscope-head"></div>
+                        <div class="stethoscope-tube"></div>
+                    </div>
+                </div>
+                <h3>Dr. Arogya is analyzing your case...</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <p id="loading-status">Processing your request...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
